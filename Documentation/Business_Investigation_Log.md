@@ -75,7 +75,7 @@ How long does it take customers to receive their orders?
 
 ## SQL Reference
 
-[SQl_Reference](SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql)
+[SQl_Reference](/SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql)
 
 ## Finding
 
