@@ -3,36 +3,24 @@
 **Category:** Data Quality Assessment  
 **Status:** ✅ Completed
 
----
-
 ## Business Question
 
-How many orders have a missing customer delivery date, and what are the possible reasons?
-
----
+Why do some orders have a NULL `order_delivered_customer_date`?
 
 ## Hypothesis
 
-Orders with a missing customer delivery date are most likely cancelled before reaching the customer.
+Orders with missing delivery dates are likely cancelled.
 
----
-
-## SQL Script
-
-**File:**
+## SQL Reference
 
 `SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql`
 
----
+## Finding
 
-## Findings
+A total of **2,965 orders** have a NULL `order_delivered_customer_date`.
 
-A total of **2,965 orders** have a **NULL** value in the `order_delivered_customer_date` column.
-
-To understand the reason, the orders were grouped by their current order status.
-
-| Order Status | Number of Orders |
-|--------------|----------------:|
+| Order Status | Orders |
+|--------------|------:|
 | Shipped | 1,107 |
 | Canceled | 619 |
 | Unavailable | 609 |
@@ -42,40 +30,86 @@ To understand the reason, the orders were grouped by their current order status.
 | Created | 5 |
 | Approved | 2 |
 
----
+## Insight
 
-## Interpretation
-
-The initial hypothesis was **partially correct**.
-
-Although cancelled orders account for a significant portion of the missing delivery dates, they are **not the only reason**.
-
-Several business scenarios contribute to missing delivery timestamps:
-
-- Orders that were cancelled before delivery.
-- Orders still in the processing or invoicing stage.
-- Orders that have been shipped but not yet delivered.
-- Products marked as unavailable.
-- A small number of orders marked as **Delivered** despite having no customer delivery timestamp, indicating a potential data quality issue.
+The hypothesis was only partially correct. Missing delivery dates are caused by multiple order statuses, not just cancelled orders. The **8 delivered orders** require further investigation.
 
 ---
 
-## Business Insight
+# Investigation 002 - Delivered Orders Without Delivery Timestamp
 
-Missing delivery dates are caused by multiple stages of the order lifecycle rather than a single business event.
+**Category:** Data Quality Assessment  
+**Status:** ✅ Completed
 
-The eight orders marked as **Delivered** with a missing delivery timestamp should be investigated further as they may represent data inconsistencies.
+## Business Question
+
+Are there any delivered orders without a customer delivery timestamp?
+
+## Hypothesis
+
+Every delivered order should have a delivery timestamp.
+
+## SQL Reference
+
+`SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql`
+
+## Finding
+
+**8 orders** have:
+
+- `order_status = 'delivered'`
+- `order_delivered_customer_date IS NULL`
+
+## Insight
+
+The hypothesis was incorrect. Although only 8 records are affected, they violate the expected business logic and indicate a possible data quality issue.
 
 ---
 
-## Next Investigation
 
-Investigate the **8 delivered orders** with missing delivery timestamps to determine whether they are caused by:
+# Investigation 003 - Delivery Time Performance Analysis
 
-- Data entry issues
-- ETL inconsistencies
-- Missing system updates
-- Business process exceptions
+## Business Question
+
+How long does it take customers to receive their orders?
+
+## SQL Reference
+
+`SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql`
+
+## Finding
+
+| Metric | Value |
+|--------|------:|
+| Average Delivery Time | 12 Days |
+| Minimum Delivery Time | 0 Days |
+| Maximum Delivery Time | 210 Days |
+
+## Insight
+
+Most orders are delivered within 12 days, but some orders take up to 210 days. This indicates the presence of extreme delivery delays that require further investigation.
 
 ---
 
+# Investigation 004 - Orders Taking More Than 30 Days
+
+## Business Question
+
+How many orders took more than 30 days to be delivered?
+
+## SQL Reference
+
+`SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql`
+
+## Finding
+
+| Metric | Value |
+|--------|------:|
+| Total Orders | 4,296 |
+| Average Delivery Time | 42 Days |
+| Minimum | 31 Days |
+| Maximum | 210 Days |
+
+## Insight
+
+Around 4.3% of all orders took more than 30 days to reach customers. These orders should be analyzed further to identify the reason for the delay.
