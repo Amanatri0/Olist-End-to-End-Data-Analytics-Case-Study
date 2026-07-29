@@ -14,8 +14,6 @@ IGNORE 1 ROWS
     customer_state
 );
 
-
-
 -- =====================================================
 -- Load: Products
 -- =====================================================
@@ -74,6 +72,50 @@ IGNORE 1 ROWS
 );
 
 
+-- =====================================================
+-- Load: Product Category Translation
+-- Purpose:
+-- Maps Portuguese product categories to English.
+-- No transformations are required.
+-- =====================================================
+
+LOAD DATA LOCAL INFILE 'C:/Users/Aman Atri/OneDrive/Desktop/E-commerce Analysis/Data/Working Dataset/product_category_name_translation.csv'
+INTO TABLE product_category_name_translaction
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(
+    @product_name,
+    @product_english
+);
+SET 
+	product_category_name = NULLIF(@product_name, ''),
+    product_category_name_english = NULLIF(@product_english, '');
+
+
+-- =====================================================
+-- Load: Geolocation
+-- Purpose:
+-- Loads Brazilian geolocation reference data containing
+-- ZIP code prefixes, latitude, longitude, city and state.
+-- No transformations are required.
+-- =====================================================
+
+LOAD DATA LOCAL INFILE 'C:/Users/Aman Atri/OneDrive/Desktop/E-commerce Analysis/Data/Working Dataset/olist_geolocation_dataset.csv'
+INTO TABLE geolocation
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(
+    geolocation_zip_code_prefix,
+    geolocation_lat,
+    geolocation_lng,
+    geolocation_city,
+    geolocation_state
+);
+
 LOAD DATA LOCAL INFILE 'C:/Users/Aman Atri/OneDrive/Desktop/E-commerce Analysis/Data/Working Dataset/olist_orders_dataset.csv'
 INTO TABLE orders
 FIELDS TERMINATED BY ','
@@ -98,6 +140,13 @@ order_delivered_customer_date = STR_TO_DATE(NULLIF(@customer, ''), '%Y-%m-%d %H:
 order_estimated_delivery_date = STR_TO_DATE(NULLIF(@estimated,''), '%Y-%m-%d %H:%i:%s');
 
 
+-- =====================================================
+-- Load: Order Items
+-- Purpose:
+-- Loads all items belonging to each customer order.
+-- Converts shipping_limit_date into DATETIME.
+-- =====================================================
+
 LOAD DATA LOCAL INFILE 'C:/Users/Aman Atri/OneDrive/Desktop/E-commerce Analysis/Data/Working Dataset/olist_order_items_dataset.csv'
 INTO TABLE order_items
 FIELDS TERMINATED BY ','
@@ -105,13 +154,61 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 (
-	order_id,
+    order_id,
     order_item_id,
     product_id,
     seller_id,
-    @shipping,
+    @shipping_limit_date,
     price,
     freight_value
 )
 SET
-shipping_limit_date = STR_TO_DATE(@shipping, '%Y-%m-%d %H:%i:%s')
+shipping_limit_date = STR_TO_DATE(NULLIF(@shipping_limit_date,''), '%Y-%m-%d %H:%i:%s');
+
+-- =====================================================
+-- Load: Order Payments
+-- Purpose:
+-- Loads payment information for each customer order.
+-- No transformations are required.
+-- =====================================================
+
+LOAD DATA LOCAL INFILE 'C:/Users/Aman Atri/OneDrive/Desktop/E-commerce Analysis/Data/Working Dataset/olist_order_payments_dataset.csv'
+INTO TABLE order_payments
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(
+    order_id,
+    payment_sequential,
+    payment_type,
+    payment_installments,
+    payment_value
+);
+
+
+-- =====================================================
+-- Load: Order Reviews
+-- Purpose:
+-- Loads customer reviews for completed orders.
+-- Converts review dates into DATETIME.
+-- =====================================================
+
+LOAD DATA LOCAL INFILE 'C:/Users/Aman Atri/OneDrive/Desktop/E-commerce Analysis/Data/Working Dataset/olist_order_reviews_dataset.csv'
+INTO TABLE order_reviews
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(
+    review_id,
+    order_id,
+    review_score,
+    review_comment_title,
+    review_comment_message,
+    @review_creation_date,
+    @review_answer_timestamp
+)
+SET
+review_creation_date = STR_TO_DATE(NULLIF(@review_creation_date,''), '%Y-%m-%d %H:%i:%s'),
+review_answer_timestamp =STR_TO_DATE(NULLIF(@review_answer_timestamp,''), '%Y-%m-%d %H:%i:%s');
