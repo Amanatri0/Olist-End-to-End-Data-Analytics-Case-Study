@@ -66,3 +66,11 @@ from orders
 where datediff(order_delivered_customer_date , order_purchase_timestamp) > 30;
  
 
+-- Finds the min, max, avg duration of delivery time --  
+
+select 
+    min(datediff(order_delivered_customer_date , order_purchase_timestamp)) as min_days,
+    max(datediff(order_delivered_customer_date , order_purchase_timestamp)) as max_days,
+    round(avg(datediff(order_delivered_customer_date , order_purchase_timestamp))) as avg_days
+from orders
+WHERE DATEDIFF(order_delivered_customer_date, order_purchase_timestamp) > 30;

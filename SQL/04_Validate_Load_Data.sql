@@ -19,6 +19,25 @@ SELECT
     COUNT(customer_state) AS customer_state
 from customers;
 
+-- Duplicate primary key check --  
+
+SELECT
+    customer_id,
+    COUNT(*) AS duplicate_count
+FROM customers
+GROUP BY customer_id
+HAVING COUNT(*) > 1;
+
+-- Null Validation --  
+
+SELECT
+    SUM(customer_id IS NULL) AS customer_id,
+    SUM(customer_unique_id IS NULL) AS customer_unique_id,
+    SUM(customer_zip_code_prefix IS NULL) AS customer_zip_code_prefix,
+    SUM(customer_city IS NULL) AS customer_city,
+    SUM(customer_state IS NULL) AS customer_state
+FROM customers;
+
 -- This query helps to identify duplicates PRIMARY KEY entry, it substrat the total count by total distint count of PRIMARY KEY / the row where you want to count the number of duplicate entries --  
 
 SELECT

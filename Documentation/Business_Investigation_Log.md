@@ -13,7 +13,7 @@ Orders with missing delivery dates are likely cancelled.
 
 ## SQL Reference
 
-`SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql`
+[SQl_Reference](/SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql)
 
 ## Finding
 
@@ -51,7 +51,7 @@ Every delivered order should have a delivery timestamp.
 
 ## SQL Reference
 
-`SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql`
+[SQl_Reference](/SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql)
 
 ## Finding
 
@@ -99,7 +99,7 @@ How many orders took more than 30 days to be delivered?
 
 ## SQL Reference
 
-`SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql`
+[SQl_Reference](/SQL/Orders_SQL_SCRIPTS/Validating_Orders.sql)
 
 ## Finding
 
