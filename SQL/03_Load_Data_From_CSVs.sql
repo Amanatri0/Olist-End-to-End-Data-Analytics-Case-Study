@@ -186,6 +186,7 @@ IGNORE 1 ROWS
     payment_value
 );
 
+drop table order_reviews;
 
 -- =====================================================
 -- Load: Order Reviews
@@ -204,11 +205,13 @@ IGNORE 1 ROWS
     review_id,
     order_id,
     review_score,
-    review_comment_title,
-    review_comment_message,
+    @review_title,
+    @review_message,
     @review_creation_date,
     @review_answer_timestamp
 )
 SET
+review_comment_title = NULLIF(@review_title, " "),
+review_comment_message = NULLIF(@review_message, " "),
 review_creation_date = STR_TO_DATE(NULLIF(@review_creation_date,''), '%Y-%m-%d %H:%i:%s'),
 review_answer_timestamp =STR_TO_DATE(NULLIF(@review_answer_timestamp,''), '%Y-%m-%d %H:%i:%s');

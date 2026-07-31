@@ -1,5 +1,5 @@
 -- This query helps to count the total number of Rows imported-- 
-
+use olist_analytics;
 SELECT COUNT(*) AS total_customers
 FROM customers;
 

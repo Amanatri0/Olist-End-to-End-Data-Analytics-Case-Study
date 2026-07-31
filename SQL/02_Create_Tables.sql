@@ -38,7 +38,7 @@ payment_type VARCHAR(30) ,
 payment_installments INT , 
 payment_value DOUBLE
 );
-drop table order_reviews;
+
 
 create table order_reviews ( 
 review_id CHAR(32) NOT NULL, 
